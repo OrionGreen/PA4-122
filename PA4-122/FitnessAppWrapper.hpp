@@ -22,34 +22,32 @@ public:
 
 	void runApp();
 
-	void loadDailyDPlan(fstream& fileStream);
+	void loadDailyPlan(fstream& fileStream, ListNode& DNode);
 
-	void loadWeeklyDPlan(fstream& fileStream);
+	void loadWeeklyPlan(fstream& fileStream, DietList& DList);
 
-	void displayDailyDPlan(ListNode DNode);
+	void displayDailyPlan(ListNode DNode, DietList& DList);
 
-	void displayWeeklyDPlan();
+	void displayWeeklyPlan(DietList& DList);
 
-	bool storeDailyDPlan(fstream& fileStream, ListNode DNode);
+	bool storeDailyPlan(fstream& fileStream, ListNode DNode, DietList& DList);
 
-	bool storeWeeklyDPlan(fstream& fileStream);
+	bool storeWeeklyPlan(fstream& fileStream, DietList& DList);
 
-	void editGoalDPlan();
+	void editGoalPlan(DietList& DList);
 
 
-	void loadDailyEPlan(fstream& fileStream);
+	void loadWeeklyPlan(fstream& fileStream, ExerList& EList);
 
-	void loadWeeklyEPlan(fstream& fileStream);
+	void displayDailyPlan(ListNode ENode, ExerList& EList);
 
-	void displayDailyEPlan(ListNode ENode);
+	void displayWeeklyPlan(ExerList& EList);
 
-	void displayWeeklyEPlan();
+	bool storeDailyPlan(fstream& fileStream, ListNode ENode, ExerList& EList);
 
-	bool storeDailyEPlan(fstream& fileStream, ListNode ENode);
+	bool storeWeeklyPlan(fstream& fileStream, ExerList& EList);
 
-	bool storeWeeklyEPlan(fstream& fileStream);
-
-	void editGoalEPlan();
+	void editGoalPlan(ExerList& EList);
 	
 
 	int displayMenu();

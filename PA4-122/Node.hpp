@@ -16,6 +16,7 @@ public:
 
 	~ListNode();
 
+	
 	//setters
 	void setNextPtr(ListNode* const pNewNext);
 	void setmName(string const newName);

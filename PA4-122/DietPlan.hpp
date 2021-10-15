@@ -12,6 +12,7 @@ class DietList
 public:
 	DietList(ListNode* pNewHead = nullptr, ListNode* pNewTail = nullptr);
 
+
 	DietList& operator= (const DietList& rhs);
 
 	~DietList();

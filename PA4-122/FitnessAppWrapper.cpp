@@ -11,6 +11,8 @@ void FitnessAppWrapper::runApp() {
 	int choice = 0;
 	fstream dietFile;
 	fstream exerFile;
+	DietList dList;
+	ExerList eList;
 
 	while (choice != 10) {
 		choice = displayMenu();
@@ -19,7 +21,7 @@ void FitnessAppWrapper::runApp() {
 			if (!dietFile.is_open()) {
 				dietFile.open("dietPlans.txt", std::ios::in);
 			}
-			loadWeeklyDPlan(dietFile);
+			loadWeeklyPlan(dietFile, dList);
 			dietFile.close();
 			system("cls");
 		}
@@ -28,7 +30,7 @@ void FitnessAppWrapper::runApp() {
 			if (!exerFile.is_open()) {
 				exerFile.open("exercisePlans.txt", std::ios::in);
 			}
-			loadWeeklyEPlan(exerFile);
+			loadWeeklyPlan(exerFile, eList);
 			exerFile.close();
 			system("cls");
 		}
@@ -37,7 +39,7 @@ void FitnessAppWrapper::runApp() {
 			if (!dietFile.is_open()) {
 				dietFile.open("dietPlans.txt", std::ios::out);
 			}
-			storeWeeklyDPlan(dietFile);
+			storeWeeklyPlan(dietFile, dList);
 			dietFile.close();
 			system("cls");
 		}
@@ -46,28 +48,28 @@ void FitnessAppWrapper::runApp() {
 			if (!exerFile.is_open()) {
 				exerFile.open("exercisePlans.txt", std::ios::out);
 			}
-			storeWeeklyEPlan(exerFile);
+			storeWeeklyPlan(exerFile, eList);
 			exerFile.close();
 			system("cls");
 		}
 
 		if (choice == 5) {
-			displayWeeklyDPlan();
+			displayWeeklyPlan(dList);
 
 		}
 
 		if (choice == 6) {
-			displayWeeklyEPlan();
+			displayWeeklyPlan(eList);
 
 		}
 
 		if (choice == 7) {
-			editGoalDPlan();
+			editGoalPlan(dList);
 			system("cls");
 		}
 
 		if (choice == 8) {
-			editGoalEPlan();
+			editGoalPlan(eList);
 			system("cls");
 		}
 
@@ -78,8 +80,8 @@ void FitnessAppWrapper::runApp() {
 			if (!dietFile.is_open()) {
 				dietFile.open("dietPlans.txt", std::ios::out);
 			}
-			storeWeeklyDPlan(dietFile);
-			storeWeeklyEPlan(exerFile);
+			storeWeeklyPlan(dietFile, dList);
+			storeWeeklyPlan(exerFile, eList);
 			dietFile.close();
 			exerFile.close();
 			system("cls");
@@ -90,29 +92,38 @@ void FitnessAppWrapper::runApp() {
 		}
 }
 //overloaded stream operation there is no reason for loadDaily plan because I have an overloaded stream operator for the list that basically does the same thing.
-void FitnessAppWrapper::loadDailyDPlan(fstream& fileStream) {
-	fileStream >> mDList;
+void FitnessAppWrapper::loadDailyPlan(fstream& fileStream, ListNode& DNode) {
+	fileStream >> DNode;
 }
 
-void FitnessAppWrapper::loadWeeklyDPlan(fstream& fileStream) {
-	fileStream >> mDList;
+void FitnessAppWrapper::loadWeeklyPlan(fstream& fileStream, DietList& DList) {
+	ListNode* pMem = new ListNode("", "", 0);
+	mDList.setmpHead(pMem);
+	mDList.setmpTail(pMem);
+
+	while (!fileStream.eof()) {
+		loadDailyPlan(fileStream, *(pMem));
+		mDList.endList(pMem);
+		pMem = new ListNode("", "", 0);
+	}
+	delete pMem;
 
 }
 //overloaded stream operation, there is really no need for display daily plan because I can just use the overloaded list stream operator but I did it in the "correct way" just to show that I can do it with calling the daily function
-void FitnessAppWrapper::displayDailyDPlan(ListNode DNode) {
+void FitnessAppWrapper::displayDailyPlan(ListNode DNode, DietList& DList) {
 	cout << DNode;
 }
 
-void FitnessAppWrapper::displayWeeklyDPlan() {
+void FitnessAppWrapper::displayWeeklyPlan(DietList& DList) {
 	ListNode* pMem = mDList.getmpHead();
 
 	while (pMem != nullptr) {
-		displayDailyDPlan(*(pMem));
+		displayDailyPlan(*(pMem), mDList);
 		pMem = pMem->getNextPtr();
 	}
 }
 //storing plans I can of course just do this with stream operator again on the full list but this is more proper. Or at least what the PA calls for.
-bool FitnessAppWrapper::storeDailyDPlan(fstream& fileStream, ListNode DNode) {
+bool FitnessAppWrapper::storeDailyPlan(fstream& fileStream, ListNode DNode, DietList& DList) {
 	bool success = false;
 	if (fileStream.is_open()) {
 		fileStream << DNode;
@@ -121,50 +132,55 @@ bool FitnessAppWrapper::storeDailyDPlan(fstream& fileStream, ListNode DNode) {
 	return success;
 }
 
-bool FitnessAppWrapper::storeWeeklyDPlan(fstream& fileStream) {
+bool FitnessAppWrapper::storeWeeklyPlan(fstream& fileStream, DietList& DList) {
 	ListNode* pMem = mDList.getmpHead();
 	bool success = false;
 	if (fileStream.is_open()) {
 		while (pMem != nullptr) {
-			storeDailyDPlan(fileStream, *(pMem));
+			storeDailyPlan(fileStream, *(pMem), mDList);
 			pMem = pMem->getNextPtr();
 		}
 	}
 	return success;
 }
 //edits goal and displays the editted list
-void FitnessAppWrapper::editGoalDPlan() {
+void FitnessAppWrapper::editGoalPlan(DietList& DList) {
 	mDList.editValue();
-	displayWeeklyDPlan();
+	displayWeeklyPlan(mDList);
 	Sleep(4000);
 }
 
 
 
 //same funtions as the other but for the exercise list
-void FitnessAppWrapper::loadDailyEPlan(fstream& fileStream) {
-	fileStream >> mEList;
+
+void FitnessAppWrapper::loadWeeklyPlan(fstream& fileStream, ExerList& EList) {
+	ListNode* pMem = new ListNode("", "", 0);
+	mEList.setmpHead(pMem);
+	mEList.setmpTail(pMem);
+
+	while (!fileStream.eof()) {
+		loadDailyPlan(fileStream, *(pMem));
+		mEList.endList(pMem);
+		pMem = new ListNode("", "", 0);
+	}
+	delete pMem;
 }
 
-void FitnessAppWrapper::loadWeeklyEPlan(fstream& fileStream) {
-	fileStream >> mEList;
-
-}
-
-void FitnessAppWrapper::displayDailyEPlan(ListNode ENode) {
+void FitnessAppWrapper::displayDailyPlan(ListNode ENode, ExerList& EList) {
 	cout << ENode;
 }
 
-void FitnessAppWrapper::displayWeeklyEPlan() {
+void FitnessAppWrapper::displayWeeklyPlan(ExerList& EList) {
 	ListNode* pMem = mEList.getmpHead();
 
 	while (pMem != nullptr) {
-		displayDailyEPlan(*(pMem));
+		displayDailyPlan(*(pMem), mEList);
 		pMem = pMem->getNextPtr();
 	}
 }
 
-bool FitnessAppWrapper::storeDailyEPlan(fstream& fileStream, ListNode ENode) {
+bool FitnessAppWrapper::storeDailyPlan(fstream& fileStream, ListNode ENode, ExerList& EList) {
 	bool success = false;
 	if (fileStream.is_open()) {
 		fileStream << ENode;
@@ -173,21 +189,21 @@ bool FitnessAppWrapper::storeDailyEPlan(fstream& fileStream, ListNode ENode) {
 	return success;
 }
 
-bool FitnessAppWrapper::storeWeeklyEPlan(fstream& fileStream) {
+bool FitnessAppWrapper::storeWeeklyPlan(fstream& fileStream, ExerList& EList) {
 	ListNode* pMem = mEList.getmpHead();
 	bool success = false;
 	if (fileStream.is_open()) {
 		while (pMem != nullptr) {
-			storeDailyEPlan(fileStream, *(pMem));
+			storeDailyPlan(fileStream, *(pMem), mEList);
 			pMem = pMem->getNextPtr();
 		}
 	}
 	return success;
 }
 
-void FitnessAppWrapper::editGoalEPlan() {
+void FitnessAppWrapper::editGoalPlan(ExerList& EList) {
 	mEList.editValue();
-	displayWeeklyEPlan();
+	displayWeeklyPlan(mEList);
 	Sleep(4000);
 }
 

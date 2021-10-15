@@ -7,6 +7,8 @@ ListNode::ListNode(string newDate, string newName, int newData) {
 	this->mpNext = nullptr;
 }
 
+
+
 ListNode& ListNode::operator= (const ListNode& rhs) {
 
 	if (this != &rhs) {//self assignment?

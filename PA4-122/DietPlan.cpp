@@ -12,6 +12,7 @@ DietList::DietList(ListNode* pNewHead, ListNode* pNewTail)
 	this->mpTail = pNewTail;
 }
 
+
 DietList& DietList::operator= (const DietList& rhs) {
 	if (this != &rhs) {//self assignment?
 		//this pointer - address of instance of object
