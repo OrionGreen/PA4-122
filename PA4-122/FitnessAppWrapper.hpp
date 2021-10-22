@@ -55,5 +55,7 @@ private:
 	//declare private variables
 	DietList mDList;
 	ExerList mEList;
+	fstream dietFile;
+	fstream exerFile;
 
 };

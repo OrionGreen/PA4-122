@@ -9,8 +9,6 @@ FitnessAppWrapper::~FitnessAppWrapper() {
 //I chose to have each time the file is open in a different form to close and open to make sure you can swap between functions correctly
 void FitnessAppWrapper::runApp() {
 	int choice = 0;
-	fstream dietFile;
-	fstream exerFile;
 	DietList dList;
 	ExerList eList;
 
